@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./templates/projectTemplate.xhtml">
+
+            <ui:define name="top">
+                top
+            </ui:define>
+
+            <ui:define name="left">
+                <h2>Links</h2><br/>
+                <h:form id="links">
+                    <h:commandLink value="Projects" action="projects"/><br/>
+                    <h:commandLink value="People" action="people"/>
+                    <h:commandLink value="Tasks" action="tasks"/><br/>
+                    <h:commandLink value="Time register" action="timespent"/><br/>
+                    <h:commandLink value="Task assingments" action="assignments"/>
+                </h:form>
+            </ui:define>
+            <ui:define name="right">
+                right
+            </ui:define>
+            <ui:define name="content">
+                <f:view>
+                    <h:form id="form">
+                        <p:growl id="messages" showDetail="true"/>
+                        <h1><h:outputText value="Project members maintenance"/></h1>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel for="personName" value="Member name: "/>
+                            <p:inputText id="personName" value="#{personController.name}"/>
+                            
+                            <f:facet name="footer">
+                                <p:commandButton  update="data" id="buttonID" value="Add member" actionListener="#{personController.addPerson}">
+                                  <f:ajax execute="personName" render="data" />
+                                </p:commandButton>
+                                
+                            </f:facet>                            
+                        </p:panelGrid>
+                        <p:dataTable id="data" value="#{personController.all}" var="item" editable="true"
+                                     paginator="true" rows="15" filteredValue="#{personController.filteredList}" widgetVar="filtList">
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Search All fields: "/>
+                                    <h:inputText id="globalFilter" onkeyup="filtList.filter()"/>
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{personController.editPerson}" update=":form:messages"/>
+                            <p:column headerText="Member Id" filterBy="#{item.personId}" filterMatchMode="exact">                                
+                                <h:outputText value="#{item.personId}"/>
+                            </p:column>
+                            <p:column headerText="Person Name" filterBy="#{item.personName}" filterMatchMode="contains">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                         <h:outputText value="#{item.personName}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{personController.name}" required="true"/>
+                                    </f:facet>
+                                </p:cellEditor>                                
+                            </p:column>
+                            <p:column>
+                                <p:rowEditor/>
+                            </p:column>
+                            <p:column headerText="Remove member">
+                                <p:commandButton update="data" value="Remove" type="button" onclick="cd.show()" />
+                                <p:confirmDialog message="Are you sure you want to remove this member?" header="Removing memember...." severity="alert" widgetVar="cd">                                   
+                                    <p:commandButton value="Yes" action="#{personController.removePerson(item.personId)}" update=":form:messages" oncomplete="cd.hide()"/>
+                                    <h:commandButton value="No" onclick="cd.hide()" type="button" /> 
+                                </p:confirmDialog>                        
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </f:view>
+            </ui:define>
+            <ui:define name="bottom">
+                bottom
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+        <ui:composition template="./templates/projectTemplate.xhtml">
+            <ui:define name="top">
+                top
+            </ui:define>
+            <ui:define name="left">
+                <h2>Links</h2><br/>
+                <h:form id="links">
+                    <h:commandLink value="Tasks" action="tasks"/><br/>
+                    <h:commandLink value="Members" action="people"/><br/>
+                    <h:commandLink value="Task assingments" action="assignments"/>
+                    <h:commandLink value="Time register" action="timespent"/>
+                </h:form>
+            </ui:define>
+            <ui:define name="right">
+                right
+            </ui:define>
+            <ui:define name="content">
+                <f:view>
+                    <h:form id="form"> 
+                        <p:growl id="messages" showDetail="true"/>
+                        <h1><h:outputText value="Projects maintenance"/></h1>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel for="projectName" value="Project name: "/>
+                            <p:inputText id="projectName" value="#{projectController.projectName}"/>
+                            <f:facet name="footer">
+                                <h:commandButton value="Add project" actionListener="#{projectController.addProject}">
+                                    <f:ajax execute="projectName" render="outputMessage" />
+                                </h:commandButton>
+                            </f:facet>                            
+                        </p:panelGrid>
+                        <p:dataTable id="outputMessage" value="#{projectController.all}" var="item" editable="true"
+                                     paginator="true" rows="15">
+                            <f:facet name="header">
+                                Projects
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{projectController.editProject}" update=":form:messages"/>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Project Id"/>
+                                </f:facet>
+                                <h:outputText value="#{item.projectId}"/>
+                            </p:column>
+                            <p:column headerText="Project Name">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.projectName}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{projectController.projectName}"/>
+                                    </f:facet>
+                                </p:cellEditor>                                
+                            </p:column>
+                            <p:column>
+                                <p:rowEditor/>
+                            </p:column>
+                            <p:column>
+                                <h:commandLink id="delLink" value="Delete" actionListener="#{projectController.removeProject(item.projectId)}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </f:view>
+            </ui:define>
+            <ui:define name="bottom">
+                bottom
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

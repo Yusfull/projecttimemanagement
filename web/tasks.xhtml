@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+   
+    <body>
+        
+        <ui:composition template="./templates/projectfirsttemplate.xhtml">
+
+            <ui:define name="top">
+                <h1>Time Spent on tasks</h1>
+            </ui:define>
+
+            <ui:define name="left">
+             <h2>Links</h2><br/>
+                <h:form id="links">
+                    <h:commandLink value="Projects" action="projects"/><br/>
+                    <h:commandLink value="Members" action="people"/><br/>
+                    <h:commandLink value="Tasks" action="tasks"/><br/>
+                    <h:commandLink value="Time register" action="timespent"/><br/>
+                    <h:commandLink value="Task assingments" action="assignments"/>
+                </h:form>
+            </ui:define>           
+
+            <ui:define name="content">
+                <f:view>
+        
+        
+        <h:form id="addTask">
+            <b>Task:</b><br/>
+            <table>
+                <tr>
+                    <td>Task Name:</td>
+                    <td><h:inputText id="name" value="#{taskController.taskName}"/></td>
+                </tr>
+                <tr>
+                    <td>Project name:</td>
+                    <td>
+                        <h:selectOneMenu value="#{taskController.projectID}">
+                            <f:selectItems value="#{taskController.projects}" var="t" itemLabel="#{t.projectName}" itemValue="#{t.projectId}" />
+                        </h:selectOneMenu> 
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><h:commandButton id="addbutton" value="Add task" action="#{taskController.addTask}"/></td>
+                </tr>
+                
+            </table>
+            
+        </h:form>        
+        
+        <f:view>
+            <h:form>                
+                <h1><h:outputText value="Projects and tasks"/></h1>
+                <h:dataTable headerClass="header" rowClasses="evenRow, oddRow" value="#{taskController.all}" var="item">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Task id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.taskId}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Task name"/>
+                        </f:facet>
+                        <h:outputText rendered="#{taskController.task ne item}" value="#{item.taskName}"/>
+                        <h:inputText rendered="#{taskController.task eq item}" value="#{taskController.task.taskName}"/>
+                    </h:column>
+                     <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Project name"/>
+                        </f:facet>
+                         <h:outputText value="#{item.projectId.projectName}"/>                        
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Edit member"/>
+                        </f:facet>
+                        <h:commandButton rendered="#{taskController.task ne item}" value="Edit" action="#{taskController.changeTask(item)}"/>
+                        <h:commandButton rendered="#{taskController.task eq item}" value="Update" action="#{taskController.editTask}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Delete member"/>
+                        </f:facet>
+                        <h:commandButton value="Delete" action="#{taskController.removeTask(item.taskId)}"/>                        
+                    </h:column>
+                    
+                    <p:summaryRow>
+                                <p:column colspan="6" style="text-align: right">
+                                    Total time spent:
+                                </p:column>
+                    </p:summaryRow>
+                    
+                </h:dataTable>
+            </h:form>
+        </f:view>
+                    </f:view>
+                    </ui:define>
+                    
+            <ui:define name="bottom">
+                bottom
+            </ui:define>
+
+        </ui:composition>
+    </body>
+</html>
+

@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./templates/projectTemplate.xhtml">
+            <ui:define name="top">
+                top
+            </ui:define>
+            <ui:define name="left">
+                <h2>Links</h2><br/>
+                <h:form id="links">
+                    <h:commandLink value="Projects" action="projects"/><br/>
+                    <h:commandLink value="Person" action="people"/><br/>
+                    <h:commandLink value="Tasks" action="tasks"/><br/>
+                    <h:commandLink value="Time register" action="timespent"/><br/>
+                    <h:commandLink value="Task assingments" action="assignments"/>
+                </h:form>
+            </ui:define>
+            <ui:define name="right">
+                right
+            </ui:define>
+            <ui:define name="content">
+                <f:view>
+                    <h:form id="form">
+                        <p:growl id="msg" showDetail="true"/>
+                        <h1><h:outputText value="Assignments List"/></h1>
+                        <p:panelGrid columns="2">
+                            <h:outputText value="Select member: "/>
+                            <h:selectOneMenu value="#{personTaskAssignController.personID}">
+                                <f:selectItems value="#{personTaskAssignController.people}" var="person" itemValue="#{person.personId}" itemLabel="#{person.personName}"/>
+                            </h:selectOneMenu>
+                            <h:outputText value="Select task: "/>
+                            <h:selectOneMenu value="#{personTaskAssignController.taskID}">
+                                <f:selectItems value="#{personTaskAssignController.tasks}" var="task" itemLabel="#{task.taskName}" itemValue="#{task.taskId}"/>
+                            </h:selectOneMenu>
+                            <h:outputText value="Date from: "/>
+                            <p:calendar mode="popup" value="#{personTaskAssignController.dateFrom}"/>
+                            <h:outputText value="Date to: "/>
+                            <p:calendar mode="popup" value="#{personTaskAssignController.dateTo}"/>
+                            <f:facet name="footer">
+                                <h:commandButton value="Assign member" actionListener="#{personTaskAssignController.assignMember}"/>
+                            </f:facet>
+                        </p:panelGrid>
+                        <p:dataTable value="#{personTaskAssignController.assignments}" var="item" editable="true">
+                            <p:ajax event="rowEdit" listener="#{personTaskAssignController.editAssignment}" update=":form:msg"/>
+                            <p:column headerText="Assignment id">                                
+                                <h:outputText value="#{item.personTaskAssignmentId}"/>
+                            </p:column>
+                            <p:column headerText="Member">                                
+                                <h:outputText value="#{item.personId.personName}"/>                                    
+                            </p:column>
+                            <p:column headerText="Task">                                
+                                <h:outputText value="#{item.taskId.taskName}"/>                                    
+                            </p:column>
+                            <p:column headerText="Date from">                                
+                                <p:cellEditor id="myCell">
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.dateFrom}">
+                                            <f:convertDateTime pattern="dd.MM.yyyy"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                    <f:facet name="input">                                    
+                                        <h:inputText value="#{personTaskAssignController.dateFrom}">
+                                            <f:convertDateTime pattern="dd.MM.yyyy"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Date to">                                
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.dateTo}">
+                                            <f:convertDateTime pattern="dd.MM.yyyy"/>
+                                        </h:outputText>
+                                    </f:facet>
+                                    <f:facet name="input">                                        
+                                        <h:inputText value="#{personTaskAssignController.dateTo}">
+                                            <f:convertDateTime pattern="dd.MM.yyyy"/>
+                                        </h:inputText>       
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Edit">
+                                <p:rowEditor/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </f:view>
+            </ui:define>
+            <ui:define name="bottom">
+                bottom
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

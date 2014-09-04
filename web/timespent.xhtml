@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./templates/projectfirsttemplate.xhtml">
+
+            <ui:define name="top">
+                <h1>Time Spent on tasks</h1>
+            </ui:define>
+
+            <ui:define name="left">
+                <h2>Links</h2><br/>
+                <h:form id="links">
+                    <h:commandLink value="Projects" action="projects"/><br/>
+                    <h:commandLink value="People" action="people"/><br/>
+                    <h:commandLink value="Tasks" action="tasks"/><br/>
+                    <h:commandLink value="Time register" action="timespent"/><br/>
+                    <h:commandLink value="Task assingments" action="assignments"/>
+                </h:form>
+            </ui:define>           
+
+            <ui:define name="content">
+                <f:view>
+                    <h:form enctype="multipart/form-data">
+                        <h1><p:outputLabel value="Time spent by members in performing tasks"/></h1>
+                        <p:dataTable value="#{timeSpentController.timeSpent}" var="item">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Date from"/>
+                                </f:facet>
+                                <p:outputLabel value="#{item.dateTimeFrom}">
+                                    <f:convertDateTime pattern="MMM-dd-YYYY HH:mm.SSS" type="date"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Date to"/>
+                                </f:facet>
+                                <p:outputLabel value="#{item.dateTimeTo}">
+                                    <f:convertDateTime pattern="MMM-dd-YYYY HH:mm.SSS" type="date"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column sortBy="person">
+                                <f:facet name="header">
+                                    <p:outputLabel value="Member" />
+                                </f:facet>
+                                <p:outputLabel value="#{item.personTaskAssignmentId.personId.personId}"/>
+                            </p:column>
+                            <p:column sortBy="task">
+                                <f:facet name="header">
+                                    <p:outputLabel value="TaskName"/>
+                                </f:facet>
+                                <h:outputLabel value="#{item.personTaskAssignmentId.taskId.taskName}"/>
+                            </p:column>
+                            
+                           
+                            <p:column>
+                                <f:facet name="header">
+                                    <p:outputLabel value="ProjectName"/>
+                                </f:facet>
+                                <p:outputLabel value="#{item.personTaskAssignmentId.taskId.taskName}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <p:outputLabel value="ProjectID"/>
+                                </f:facet>
+                                <p:outputLabel value="#{item.personTaskAssignmentId.taskId.taskName}"/>
+                            </p:column>
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <p:outputLabel value="Time spent (hrs)"/>
+                                </f:facet>
+                                <p:outputLabel value="#{(item.dateTimeTo.time-item.dateTimeFrom.setDate(date))/3600000}"/>
+                            </p:column>
+                            <p:summaryRow>
+                                <p:column colspan="6" style="text-align: right">
+                                    Total time spent:
+                                </p:column>
+                                <p:column>
+
+                                </p:column>
+                            </p:summaryRow>
+                        </p:dataTable>
+
+                        <h:inputFile value="#{timeSpentController.fileName}"/> <br/>
+                        <h:inputText value="#{timeSpentController.fileName}"/>
+                        <h:commandButton value="upload file" actionListener="#{autoImport.doLoad()}"/>
+                    </h:form>
+                </f:view>
+
+
+            </ui:define>
+
+            <ui:define name="bottom">
+                bottom
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
